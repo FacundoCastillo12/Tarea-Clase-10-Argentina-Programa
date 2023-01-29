@@ -19,7 +19,11 @@ function iniciarJuegoEligiendoDificultad() {
 		avisoElegirDificultad();
 	}
 }
-
+document.querySelector('#reiniciar-dificultad').onclick = function() {
+	avisoInicioJugar();
+	bloquerInputUsuario();
+	reiniciarJuego();
+}
 function iniciarJuego() {
 	reiniciarJuego();
 	bloquearDificultadUsuario();
@@ -47,6 +51,7 @@ function reiniciarJuego() {
 	quitarBloqueoDificultadUsuario();
 	borrarCuadradosNuevos();
 }
+
 function turnoMaquina() {
 	const $facil = document.querySelector('#facil');
 	const $dificil = document.querySelector('#dificil');
