@@ -19,13 +19,14 @@ function iniciarJuegoEligiendoDificultad() {
 		avisoElegirDificultad();
 	}
 }
-document.querySelector('#reiniciar-dificultad').onclick = function() {
+document.querySelector('#reiniciar-dificultad').onclick = function () {
 	avisoInicioJugar();
 	bloquerInputUsuario();
 	reiniciarJuego();
-}
+};
 function iniciarJuego() {
 	reiniciarJuego();
+	deshabilitarBotonIniciar();
 	bloquearDificultadUsuario();
 	manejarRonda();
 }
@@ -48,6 +49,7 @@ function reiniciarJuego() {
 	secuenciaJugador = [];
 	secuenciaMaquina = [];
 	nivel = 0;
+	habilitarBotonIniciar();
 	quitarBloqueoDificultadUsuario();
 	borrarCuadradosNuevos();
 }
@@ -89,10 +91,10 @@ function actualizarNivel(nivel) {
 	document.querySelector('#nivel').textContent = nivel;
 }
 
-function actualizarEstado(turno){
+function actualizarEstado(turno) {
 	const $actualizarTurnoJugador = document.querySelector('#div-estado');
-    $actualizarTurnoJugador.textContent = `${turno}`;
-    restablecerAviso();
+	$actualizarTurnoJugador.textContent = `${turno}`;
+	restablecerAviso();
 }
 function bloquerInputUsuario() {
 	document.querySelectorAll('.cuadrado').forEach(function ($cuadro) {
@@ -113,6 +115,14 @@ function quitarBloqueoDificultadUsuario() {
 	document.querySelectorAll('.dificultad-radio').forEach(function ($radio) {
 		$radio.disabled = false;
 	});
+}
+function deshabilitarBotonIniciar() {
+	const $deshabilitar = document.querySelector('#iniciar');
+	$deshabilitar.disabled = true;
+}
+function habilitarBotonIniciar() {
+	const $deshabilitar = document.querySelector('#iniciar');
+	$deshabilitar.disabled = false;
 }
 function usuarioPierde() {
 	bloquerInputUsuario();
@@ -140,7 +150,6 @@ function restablecerAviso() {
 	$restablecerAviso.classList.remove('alert-danger');
 	$restablecerAviso.classList.add('alert-primary');
 }
-
 
 function obtenerCuadradoAleatorio() {
 	const $cuadros = document.querySelectorAll('.cuadrado');
@@ -200,4 +209,3 @@ function borrarCuadradosNuevos() {
 		$divNuevo[i].remove();
 	}
 }
-
