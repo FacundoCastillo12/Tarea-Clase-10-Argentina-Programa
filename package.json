@@ -1,0 +1,22 @@
+{
+  "name": "tarea-clase-10-argentina-programa",
+  "version": "1.0.0",
+  "description": "Juego simon dice",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FacundoCastillo12/Tarea-Clase-10-Argentina-Programa.git"
+  },
+  "author": "Facundo Castillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FacundoCastillo12/Tarea-Clase-10-Argentina-Programa/issues"
+  },
+  "homepage": "https://github.com/FacundoCastillo12/Tarea-Clase-10-Argentina-Programa#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3"
+  }
+}

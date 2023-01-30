@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    background-color: rgb(245, 255, 255) !important;;
+}
+
+.cuadrado{
+    width: 250px;
+    height: 250px;
+    padding: 3px;
+    opacity: 0.5;
+    transition: opacity 500ms;
+}
+
+#cuadrado1 {
+    background-color: blue;
+
+
+}
+#cuadrado2{
+    background-color: red; 
+
+}
+#cuadrado3{
+    background-color: yellow;
+
+}
+#cuadrado4{
+    background-color: green;
+}
+#cuadrado5{
+    background-color: purple;
+}
+#cuadrado6{
+    background-color: black;
+    color: white;
+}
+.oculto{
+    display: none;
+}
+.bloquear{
+    display:block;
+}
+
