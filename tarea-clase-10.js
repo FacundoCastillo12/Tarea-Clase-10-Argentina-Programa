@@ -1,27 +1,28 @@
-//Simon Dice;
 let secuenciaJugador = [];
 let secuenciaMaquina = [];
 let nivel = 0;
 
-avisoInicioJugar();
-bloquerInputUsuario();
+mostrarMensaje('Toca "iniciar juego" para comenzar a jugar!', true);
+bloquearInputUsuario();
 
-document.querySelector('#iniciar').onclick = iniciarJuegoEligiendoDificultad;
-function iniciarJuegoEligiendoDificultad() {
+document.querySelector('#iniciar').onclick = validarInicioJuego;
+function validarInicioJuego() {
 	const $facil = document.querySelector('#facil');
 	const $dificil = document.querySelector('#dificil');
-	if ($facil.checked) {
-		iniciarJuego();
-	} else if ($dificil.checked) {
-		iniciarJuego();
+	if (!$facil.checked && !$dificil.checked) {
+		mostrarMensaje('Debe elegir una dificultad!', false);
+		return '';
+	}
+
+	iniciarJuego();
+
+	if ($dificil.checked) {
 		agregarCuadradoPurpuraYNegro();
-	} else {
-		avisoElegirDificultad();
 	}
 }
 document.querySelector('#reiniciar-dificultad').onclick = function () {
-	avisoInicioJugar();
-	bloquerInputUsuario();
+	mostrarMensaje('Toca "iniciar juego" para comenzar a jugar!', true);
+	bloquearInputUsuario();
 	reiniciarJuego();
 };
 function iniciarJuego() {
@@ -33,7 +34,7 @@ function iniciarJuego() {
 
 function manejarRonda(tiempo) {
 	actualizarEstado('Es el turno de la maquina!');
-	bloquerInputUsuario();
+	bloquearInputUsuario();
 
 	const $nuevoCuadro = obtenerCuadradoAleatorio();
 	secuenciaMaquina.push($nuevoCuadro);
@@ -50,28 +51,23 @@ function reiniciarJuego() {
 	secuenciaMaquina = [];
 	nivel = 0;
 	habilitarBotonIniciar();
-	quitarBloqueoDificultadUsuario();
+	desbloquearDificultadUsuario();
 	borrarCuadradosNuevos();
 }
 
 function turnoMaquina() {
-	const $facil = document.querySelector('#facil');
-	const $dificil = document.querySelector('#dificil');
-	if ($facil.checked) {
-		secuenciaMaquina.forEach(function ($cuadro, index) {
-			const RETRASO_MS = (index + 1) * 1000;
-			setTimeout(function () {
-				resaltarCuadro($cuadro);
-			}, RETRASO_MS);
-		});
-	} else if ($dificil.checked) {
-		secuenciaMaquina.forEach(function ($cuadro, index) {
-			const RETRASO_MS = (index + 1) * 500;
-			setTimeout(function () {
-				resaltarCuadro($cuadro);
-			}, RETRASO_MS);
-		});
-	}
+	secuenciaMaquina.forEach(function ($cuadro, index) {
+		const $facil = document.querySelector('#facil');
+		let retrasoMs;
+		if ($facil.checked) {
+			retrasoMs = (index + 1) * 1000;
+		} else {
+			retrasoMs = (index + 1) * 600;
+		}
+		setTimeout(function () {
+			resaltarCuadro($cuadro);
+		}, retrasoMs);
+	});
 }
 function turnoJugador() {
 	const RETRASO_TURNO_JUGADOR = (secuenciaMaquina.length + 1) * 1000;
@@ -96,7 +92,7 @@ function actualizarEstado(turno) {
 	$actualizarTurnoJugador.textContent = `${turno}`;
 	restablecerAviso();
 }
-function bloquerInputUsuario() {
+function bloquearInputUsuario() {
 	document.querySelectorAll('.cuadrado').forEach(function ($cuadro) {
 		$cuadro.onclick = function () {};
 	});
@@ -111,7 +107,7 @@ function bloquearDificultadUsuario() {
 		$radio.disabled = true;
 	});
 }
-function quitarBloqueoDificultadUsuario() {
+function desbloquearDificultadUsuario() {
 	document.querySelectorAll('.dificultad-radio').forEach(function ($radio) {
 		$radio.disabled = false;
 	});
@@ -124,27 +120,28 @@ function habilitarBotonIniciar() {
 	const $deshabilitar = document.querySelector('#iniciar');
 	$deshabilitar.disabled = false;
 }
+
+function mostrarMensaje(mensaje, esError) {
+	const $mostrarMensaje = document.querySelector('#div-estado');
+	$mostrarMensaje.textContent = mensaje;
+	if (esError) {
+		$mostrarMensaje.classList.remove('alert-danger');
+		$mostrarMensaje.classList.add('alert-primary');
+	} else {
+		$mostrarMensaje.classList.remove('alert-primary');
+		$mostrarMensaje.classList.add('alert-danger');
+	}
+}
+
 function usuarioPierde() {
-	bloquerInputUsuario();
+	bloquearInputUsuario();
 	const $actualizarEstadoPerder = document.querySelector('#div-estado');
 	$actualizarEstadoPerder.textContent = 'Has perdido. Vuelve a intentarlo!';
 	$actualizarEstadoPerder.classList.remove('alert-primary');
 	$actualizarEstadoPerder.classList.add('alert-danger');
 	reiniciarJuego();
 }
-function avisoInicioJugar() {
-	const $avisoInicioJugar = document.querySelector('#div-estado');
-	$avisoInicioJugar.textContent = 'Toca "iniciar juego" para comenzar a jugar!';
-	$avisoInicioJugar.classList.remove('alert-danger');
-	$avisoInicioJugar.classList.add('alert-primary');
-}
-function avisoElegirDificultad() {
-	const $avisoElegirDificultad = document.querySelector('#div-estado');
-	$avisoElegirDificultad.textContent = 'Debes elegir dificultad!';
-	$avisoElegirDificultad.classList.remove('alert-primary');
-	$avisoElegirDificultad.classList.add('alert-danger');
-	reiniciarJuego();
-}
+
 function restablecerAviso() {
 	const $restablecerAviso = document.querySelector('#div-estado');
 	$restablecerAviso.classList.remove('alert-danger');
@@ -166,43 +163,37 @@ function manejarInputUsuario(e) {
 		return;
 	}
 	if (secuenciaJugador.length === secuenciaMaquina.length) {
-		bloquerInputUsuario();
+		bloquearInputUsuario();
 		setTimeout(manejarRonda, 1000);
 	}
 }
 
 function agregarCuadradoPurpuraYNegro() {
-	crearCuadradoPurpura();
-	crearCuadradoNegro();
-}
-function crearCuadradoPurpura() {
 	const $divPrimeraFila = document.querySelector('#primera-fila');
+	const $divSegundaFila = document.querySelector('#segunda-fila');
 	const $div1 = document.createElement('div');
+	const $div2 = document.createElement('div');
 	$div1.classList.add('col-sm-6');
 	$div1.classList.add('mb-3');
 	$div1.classList.add('nuevos');
-	const $botonCuadro5 = document.createElement('button');
-	$botonCuadro5.id = 'cuadrado5';
-	$botonCuadro5.className = 'cuadrado';
-	$botonCuadro5.textContent = 'Purpura';
-
-	$div1.appendChild($botonCuadro5);
-	$divPrimeraFila.appendChild($div1);
-}
-function crearCuadradoNegro() {
-	const $divPrimeraFila = document.querySelector('#segunda-fila');
-	const $div2 = document.createElement('div');
 	$div2.classList.add('col-sm-6');
 	$div2.classList.add('mb-3');
 	$div2.classList.add('nuevos');
 	const $botonCuadro5 = document.createElement('button');
-	$botonCuadro5.id = 'cuadrado6';
+	const $botonCuadro6 = document.createElement('button');
+	$botonCuadro5.id = 'cuadrado5';
 	$botonCuadro5.className = 'cuadrado';
-	$botonCuadro5.textContent = 'Negro';
+	$botonCuadro5.textContent = 'Purpura';
+	$botonCuadro6.id = 'cuadrado6';
+	$botonCuadro6.className = 'cuadrado';
+	$botonCuadro6.textContent = 'Negro';
 
-	$div2.appendChild($botonCuadro5);
-	$divPrimeraFila.appendChild($div2);
+	$div1.appendChild($botonCuadro5);
+	$div2.appendChild($botonCuadro6);
+	$divPrimeraFila.appendChild($div1);
+	$divSegundaFila.appendChild($div2);
 }
+
 function borrarCuadradosNuevos() {
 	const $divNuevo = document.querySelectorAll('.nuevos');
 	for (let i = 0; i < $divNuevo.length; i++) {
